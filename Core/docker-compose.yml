@@ -1,0 +1,36 @@
+version: '3.8'
+    
+networks:
+  inner_net:
+    driver: bridge
+
+service:
+
+  master_server:
+    build:
+      context: ./master-server
+      dockerfile: Dockerfile
+    networks:
+      - inner_net
+    env_file:
+      - env/.env_master_server
+    ports:
+      - "3080": "80"
+      - "3443": "443"
+
+  mysql: 
+    image: mysql:8
+    networks:
+      - inner_net
+    ports:
+      - "3306:3306"
+    env_file:
+      - env/.env_db
+    volumes:
+      - db_data:/var/lib/mysql
+
+  
+
+
+volumes:
+  db_data:
